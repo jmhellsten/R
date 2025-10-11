@@ -1,0 +1,59 @@
+# Palmer Penguins Analysis
+# This work uses the Palmer Penguins package
+
+# Setup: Install and load packages ---
+# install.packages("palmerpenguins")
+# install.packages("ggplot2")
+library(palmerpenguins)
+library(ggplot2)
+
+# Load data ---
+data(penguins)
+
+# Explore data ----
+# View data in spreadsheet format
+View(penguins)
+
+# Check data structure
+str(penguins)
+
+# Summary statistics
+summary(penguins)
+
+# Visualizations ----
+
+# SCATTER PLOT: Bill dimensions by species
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point(size = 3) +
+  labs(title = "Penguin Bill Dimensions",
+       x = "Bill Length (mm)",
+       y = "Bill Depth (mm)") +
+  theme_minimal()
+
+# Save plot
+ggsave("penguin_bill_dimensions.png", width = 8, height = 6)
+
+# HISTOGRAM: Body mass distribution by species
+ggplot(penguins, aes(x = body_mass_g, fill = species)) +
+  geom_histogram(bins = 30, alpha = 0.7, position = "identity") +
+  labs(title = "Distribution of Body Mass by Species",
+       x = "Body Mass (g)",
+       y = "Count",
+       fill = "Species") +
+  theme_minimal()
+
+# Save plot
+ggsave("penguin_body_mass_histogram.png", width = 8, height = 6)
+
+# BOXPLOT - Body mass by species
+ggplot(penguins, aes(x = species, y = body_mass_g, fill = species)) +
+  geom_boxplot() +
+  labs(title = "Body Mass Comparison by Species",
+       x = "Species",
+       y = "Body Mass (g)",
+       fill = "Species") +
+  theme_minimal()
+
+# Save plot
+ggsave("penguin_body_mass_boxplot.png", width = 8, height = 6)
+
