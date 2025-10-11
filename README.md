@@ -1,5 +1,3 @@
-# R
-
 # R Projects
 
 This repository contains my R programming projects and analyses.
