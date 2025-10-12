@@ -1,7 +1,7 @@
 # Boston Celtics 2021-22 Season Analysis
-# Description: Analysis of Boston Celtics player performance during 2021-22 NBA season
 # Data Source: https://github.com/bkrai/Sports-Analytics-With-R
 # Credit: Dr. Bharatendra Rai
+# Description: Analysis of Boston Celtics player performance during 2021-22 NBA season
 
 # Setup ----
 # Load required packages
@@ -10,10 +10,12 @@ library(ggplot2)
 library(corrplot)
 library(psych)
 library(ggExtra)
-library(MASS)
+
+cat("✅ All packages loaded successfully\n")
 
 # Load data ----
 bos <- read.csv('https://raw.githubusercontent.com/bkrai/Sports-Analytics-With-R/main/2022BOS.csv')
+cat("✅ Data loaded:", nrow(bos), "rows,", ncol(bos), "columns\n\n")
 
 # Data exploration ----
 View(bos)
@@ -23,203 +25,310 @@ dim(bos)  # 884 rows, 59 columns
 # Convert opponent to factor
 bos$slugOpponent <- as.factor(bos$slugOpponent)
 
-# Visualizations ----
+# Basic Visualizations ----
 
 ## Pie Chart: Boston Opponents
 tab <- table(bos$slugOpponent)
+png("opponent_pie_chart.png", width = 800, height = 600, res = 100)
 pie(tab, col = rainbow(30), main = "Boston Opponents")
+dev.off()
+cat("✅ Saved: opponent_pie_chart.png\n")
 
 ## Bar Plot: Games by Opponent
-barplot(tab, col = rainbow(30), las = 2)
-# las = 2 makes labels horizontal
+png("opponent_bar_plot.png", width = 800, height = 600, res = 100)
+barplot(tab, col = rainbow(30), las = 2, main = "Games by Opponent")
+dev.off()
+cat("✅ Saved: opponent_bar_plot.png\n")
 
 ## Histogram: Points Per Player Per Game
+png("points_histogram.png", width = 800, height = 600, res = 100)
 hist(bos$pts, col = 'green', 
      main = 'Points Per Player Per Game', 
      xlab = 'Points Made')
+dev.off()
+cat("✅ Saved: points_histogram.png\n")
 
 ## Scatter Plot: Points vs Minutes
-plot(pts ~ minutes, bos)
-# pts (y-axis) vs minutes (x-axis)
+png("points_vs_minutes_base.png", width = 800, height = 600, res = 100)
+plot(pts ~ minutes, bos, 
+     main = "Points vs Minutes",
+     xlab = "Minutes Played",
+     ylab = "Points Scored")
+dev.off()
+cat("✅ Saved: points_vs_minutes_base.png\n")
 
 ## Pairs Plot: Multiple variables
-pairs(bos[, 30:35])
+png("pairs_plot.png", width = 1000, height = 800, res = 100)
+pairs(bos[, c("fg3m", "fg3a", "pctFG3", "fg2m", "fg2a", "pctFG2")])
+dev.off()
+cat("✅ Saved: pairs_plot.png\n")
 
 ## Pairs Panel: Correlation matrix with distributions
-pairs.panels(bos[, 30:35])
+png("pairs_panel.png", width = 1000, height = 800, res = 100)
+pairs.panels(bos[, c("fg3m", "fg3a", "pctFG3", "fg2m", "fg2a", "pctFG2")])
+dev.off()
+cat("✅ Saved: pairs_panel.png\n")
 
 # Missing Data Handling ----
 
 # Check for missing values
-mean(bos$pctFT)  # Returns NA
-mean(bos$pctFT, na.rm = TRUE)  # 0.8097
-sd(bos$pctFT, na.rm = TRUE)    # 0.2587
+cat("\nMissing Data Analysis:\n")
+cat("Mean FT% (with NA):", mean(bos$pctFT), "\n")
+cat("Mean FT% (without NA):", mean(bos$pctFT, na.rm = TRUE), "\n")
+cat("SD FT% (without NA):", sd(bos$pctFT, na.rm = TRUE), "\n\n")
 
 # View rows with missing data
-bos[!complete.cases(bos), ]  # ! = NOT
+incomplete_rows <- bos[!complete.cases(bos), ]
+cat("Rows with missing data:", nrow(incomplete_rows), "\n")
 
 # Remove rows with missing values
-new <- na.omit(bos)
-dim(new)  # 439 rows (from 884)
+bos_clean <- na.omit(bos)
+cat("Clean dataset:", nrow(bos_clean), "rows\n\n")
 
 # Data Manipulation with dplyr ----
 
 ## SELECT specific columns
-mydata <- bos %>% select(23, 31:35, 'pts')
+mydata <- bos %>% select(namePlayer, pctFG, fg3m, fg3a, pctFG3, pctFT, pts)
 
 ## FILTER by player
 mydata1 <- bos %>% 
-  select(23, 31:35, 'pts') %>% 
+  select(namePlayer, pctFG, fg3m, fg3a, pctFG3, pctFT, pts) %>% 
   filter(namePlayer == 'Jayson Tatum')
 
 ## FILTER by points threshold
 mydata2 <- bos %>% 
-  select(23, 31:35, 'pts') %>% 
+  select(namePlayer, pctFG, fg3m, fg3a, pctFG3, pctFT, pts) %>% 
   filter(pts > 40) %>% 
   arrange(desc(pts))
 
 ## SUMMARIZE team statistics
-bos %>% 
+cat("\nTeam Statistics:\n")
+team_stats <- bos %>% 
   summarise(AVG = mean(pts), 
             SD = sd(pts), 
             COUNT = n())
+print(team_stats)
 
 ## GROUP BY player and summarize
-bos %>% 
+cat("\nTop 10 Scorers:\n")
+player_stats <- bos %>% 
   group_by(namePlayer) %>%  
   summarise(AVG = mean(pts), 
             SD = sd(pts), 
             COUNT = n()) %>% 
-  arrange(desc(AVG))
+  arrange(desc(AVG)) %>%
+  head(10)
+print(player_stats)
 
 ## MUTATE: Calculate Effective Field Goal %
-bos %>% 
+cat("\nTop 10 Effective Field Goal %:\n")
+efg_stats <- bos %>% 
   group_by(namePlayer) %>% 
   summarise(EFG = (sum(fgm) + 0.5*sum(fg3m))/sum(fga),
             COUNT = n()) %>% 
   filter(COUNT > 10) %>% 
-  arrange(desc(EFG))
+  arrange(desc(EFG)) %>%
+  head(10)
+print(efg_stats)
 
 ## Analysis: Tatum's average score in wins vs losses
-bos %>% 
+cat("\nJayson Tatum - Points in Wins vs Losses:\n")
+tatum_winloss <- bos %>% 
   filter(namePlayer == 'Jayson Tatum') %>% 
   group_by(outcomeGame) %>% 
   summarise(PTS = mean(pts))
+print(tatum_winloss)
 
 ## Analysis: Player with highest free throws made
-bos %>% 
+cat("\nTop 10 Free Throw Leaders:\n")
+ft_leaders <- bos %>% 
   group_by(namePlayer) %>%
   summarise(FT = sum(ftm)) %>% 
-  arrange(desc(FT))
+  arrange(desc(FT)) %>%
+  head(10)
+print(ft_leaders)
 
 # Advanced Visualizations with ggplot2 ----
 
+cat("\nGenerating ggplot2 visualizations...\n")
+
 ## Histogram: Plus/Minus by outcome
-bos %>% 
+p1 <- bos %>% 
   ggplot(aes(x = plusminus, fill = outcomeGame)) +
-  geom_histogram(alpha = 0.7, color = 'black') +
+  geom_histogram(alpha = 0.7, color = 'black', bins = 30) +
   facet_wrap(~outcomeGame) +
   ggtitle('Player Point Differential in Win/Loss') +
   theme_minimal()
+print(p1)
+ggsave("plusminus_histogram_facet.png", p1, width = 10, height = 6)
+cat("✅ Saved: plusminus_histogram_facet.png\n")
 
 ## Facet Grid: Plus/Minus by outcome and location
-bos %>% 
+p2 <- bos %>% 
   ggplot(aes(x = plusminus, fill = outcomeGame)) +
-  geom_histogram(alpha = 0.5, color = 'black') +
+  geom_histogram(alpha = 0.5, color = 'black', bins = 30) +
   facet_grid(vars(outcomeGame), vars(locationGame)) +
   ggtitle('Player Point Differential in Win and Loss') +
   theme_bw()
+print(p2)
+ggsave("plusminus_facet_grid.png", p2, width = 10, height = 6)
+cat("✅ Saved: plusminus_facet_grid.png\n")
 
 ## Scatter Plot: Minutes vs Points
-bos %>% 
+p3 <- bos %>% 
   ggplot(aes(x = minutes, y = pts)) +
-  geom_point() +
+  geom_point(alpha = 0.6) +
   geom_smooth(se = FALSE, method = 'lm') +
   labs(title = "Minutes vs Points",
        x = "Minutes Played",
        y = "Points Scored") +
   theme_minimal()
+print(p3)
+ggsave("minutes_vs_points.png", p3, width = 8, height = 6)
+cat("✅ Saved: minutes_vs_points.png\n")
 
 ## Scatter Plot: Colored by outcome
-bos %>% 
+p4 <- bos %>% 
   ggplot(aes(x = minutes, y = pts, col = outcomeGame)) +
-  geom_point() +
+  geom_point(alpha = 0.6) +
   geom_smooth(se = FALSE, method = 'lm') +
-  labs(title = "Minutes vs Points by Game Outcome") +
+  labs(title = "Minutes vs Points by Game Outcome",
+       x = "Minutes Played",
+       y = "Points Scored",
+       color = "Outcome") +
   theme_minimal()
+print(p4)
+ggsave("minutes_vs_points_by_outcome.png", p4, width = 8, height = 6)
+cat("✅ Saved: minutes_vs_points_by_outcome.png\n")
 
 ## Bar Plot: Effective Field Goal % by player
-new <- bos %>% 
+efg_data <- bos %>% 
   group_by(namePlayer) %>% 
   summarise(EFG = (sum(fgm) + 0.5*sum(fg3m))/sum(fga),
             COUNT = n()) %>% 
   filter(COUNT > 10) %>% 
   arrange(desc(EFG))
 
-new %>% 
-  ggplot(aes(x = factor(namePlayer), y = EFG, fill = namePlayer)) +
+p5 <- efg_data %>% 
+  ggplot(aes(x = reorder(namePlayer, EFG), y = EFG, fill = namePlayer)) +
   geom_col(show.legend = FALSE) +
   coord_flip() +
-  labs(title = "Effective Field Goal % by Player",
+  labs(title = "Effective Field Goal % by Player (Min. 10 Games)",
        x = "Player",
        y = "EFG%") +
   theme_minimal()
+print(p5)
+ggsave("efg_by_player.png", p5, width = 10, height = 8)
+cat("✅ Saved: efg_by_player.png\n")
 
 ## Box Plot: Points by player
-bos %>% 
-  ggplot(aes(x = namePlayer, y = pts, col = namePlayer)) +
+p6 <- bos %>% 
+  ggplot(aes(x = reorder(namePlayer, pts, FUN = median), 
+             y = pts, 
+             col = namePlayer)) +
   geom_boxplot(show.legend = FALSE) +
   coord_flip() +
-  labs(title = "Points Distribution by Player") +
+  labs(title = "Points Distribution by Player",
+       x = "Player",
+       y = "Points") +
   theme_minimal()
+print(p6)
+ggsave("points_boxplot_by_player.png", p6, width = 10, height = 10)
+cat("✅ Saved: points_boxplot_by_player.png\n")
 
-## Box Plot: Points by player and outcome
-bos %>% 
-  filter(minutes > 5) %>%
+## Box Plot: Points by player and outcome (filtered for clarity)
+top_players <- bos %>%
+  group_by(namePlayer) %>%
+  summarise(total_pts = sum(pts)) %>%
+  top_n(10, total_pts) %>%
+  pull(namePlayer)
+
+p7 <- bos %>% 
+  filter(minutes > 5, namePlayer %in% top_players) %>%
   ggplot(aes(x = interaction(namePlayer, outcomeGame), 
              y = pts, 
              fill = outcomeGame)) +
-  geom_boxplot(show.legend = FALSE) +
+  geom_boxplot(show.legend = TRUE) +
   coord_flip() +
-  labs(title = "Points by Player and Game Outcome") +
+  labs(title = "Points by Top 10 Players and Game Outcome",
+       x = "Player . Outcome",
+       y = "Points",
+       fill = "Outcome") +
   theme_minimal()
+print(p7)
+ggsave("points_by_player_outcome.png", p7, width = 10, height = 8)
+cat("✅ Saved: points_by_player_outcome.png\n")
 
 ## Marginal Plot: Minutes vs Points with distributions
 s <- bos %>% 
   ggplot(aes(x = minutes, y = pts)) +
-  geom_point() +
-  geom_smooth(se = FALSE, method = 'lm') +
+  geom_point(alpha = 0.6) +
+  geom_smooth(se = FALSE, method = 'lm', color = 'blue') +
+  labs(title = "Minutes vs Points with Marginal Distributions",
+       x = "Minutes Played",
+       y = "Points Scored") +
   theme_minimal()
 
-ggMarginal(s, type = 'histogram', fill = 'lightblue')
+p8 <- ggMarginal(s, type = 'histogram', fill = 'lightblue')
+print(p8)
+ggsave("minutes_vs_points_marginal.png", p8, width = 8, height = 8)
+cat("✅ Saved: minutes_vs_points_marginal.png\n")
 
 # Correlation Analysis ----
 
+cat("\nPerforming correlation analysis...\n")
+
 # Select numerical variables for correlation
-data <- bos %>% select(32:34, 37:40)
+cor_data <- bos %>% select(fg3m, fg3a, pctFG3, fg2m, fg2a, pctFG2, minutes)
 
 # Correlation matrix
-cor(data)
-round(cor(data), digits = 3)
+cor_matrix <- cor(cor_data, use = "complete.obs")
+cat("\nCorrelation Matrix:\n")
+print(round(cor_matrix, digits = 3))
 
 # Correlation plot
-corrplot(cor(data),
+png("correlation_matrix.png", width = 800, height = 800, res = 100)
+corrplot(cor(cor_data, use = "complete.obs"),
          type = 'upper',
          method = 'number',
-         number.cex = 1.2)
+         number.cex = 1.0,
+         title = "Correlation Matrix: Shooting Statistics",
+         mar = c(0,0,2,0))
+dev.off()
+cat("✅ Saved: correlation_matrix.png\n")
 
 # Pairs panel with Spearman correlation
-pairs.panels(data, method = 'spearman')
+png("pairs_panel_spearman.png", width = 1000, height = 800, res = 100)
+pairs.panels(cor_data, method = 'spearman', 
+             main = "Correlation Analysis: Shooting Statistics")
+dev.off()
+cat("✅ Saved: pairs_panel_spearman.png\n")
 
 # Summary Statistics ----
 
+cat("\n", rep("=", 50), "\n", sep = "")
+cat("SUMMARY STATISTICS\n")
+cat(rep("=", 50), "\n", sep = "")
+
 # Games played
-max(bos$numberGameTeamSeason)  # 82 games
+cat("\nMaximum games played:", max(bos$numberGameTeamSeason), "\n")
 
 # Win/Loss distribution
-table(bos$outcomeGame)
+cat("\nWin/Loss distribution:\n")
+print(table(bos$outcomeGame))
 
-# Games by game number and outcome
-table(bos$numberGameTeamSeason, bos$outcomeGame)
+# Final message
+cat("\n", rep("=", 50), "\n", sep = "")
+cat("✅ Analysis complete! All plots saved.\n")
+cat("📊 Total plots generated: 16\n")
+cat("📁 Files saved in:", getwd(), "\n")
+cat(rep("=", 50), "\n", sep = "")
 
-cat("\nAnalysis complete!\n")
+# List all saved plots
+saved_plots <- list.files(pattern = "\\.png$")
+cat("\n📋 Saved plot files:\n")
+for(i in seq_along(saved_plots)) {
+  cat("  ", i, ". ", saved_plots[i], "\n", sep = "")
+}
+
+cat("\n🏀 Boston Celtics 2021-22 Season Analysis Complete!\n")
