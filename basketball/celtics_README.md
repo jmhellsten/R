@@ -12,7 +12,7 @@ Analysis of Boston Celtics player performance during the 2021-22 NBA season.
 - **Team:** Boston Celtics
 - **Description:** Individual player statistics for every game played by Boston Celtics players during the 2021-22 season
 
-  **Data URL:https://raw.githubusercontent.com/bkrai/Sports-Analytics-With-R/main/2022BOS.csv**
+**Data URL:https://raw.githubusercontent.com/bkrai/Sports-Analytics-With-R/main/2022BOS.csv**
 
 ## Key Analyses
 
