@@ -1,0 +1,225 @@
+# Boston Celtics 2021-22 Season Analysis
+# Description: Analysis of Boston Celtics player performance during 2021-22 NBA season
+# Data Source: https://github.com/bkrai/Sports-Analytics-With-R
+# Credit: Dr. Bharatendra Rai
+
+# Setup ----
+# Load required packages
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(psych)
+library(ggExtra)
+library(MASS)
+
+# Load data ----
+bos <- read.csv('https://raw.githubusercontent.com/bkrai/Sports-Analytics-With-R/main/2022BOS.csv')
+
+# Data exploration ----
+View(bos)
+summary(bos)
+dim(bos)  # 884 rows, 59 columns
+
+# Convert opponent to factor
+bos$slugOpponent <- as.factor(bos$slugOpponent)
+
+# Visualizations ----
+
+## Pie Chart: Boston Opponents
+tab <- table(bos$slugOpponent)
+pie(tab, col = rainbow(30), main = "Boston Opponents")
+
+## Bar Plot: Games by Opponent
+barplot(tab, col = rainbow(30), las = 2)
+# las = 2 makes labels horizontal
+
+## Histogram: Points Per Player Per Game
+hist(bos$pts, col = 'green', 
+     main = 'Points Per Player Per Game', 
+     xlab = 'Points Made')
+
+## Scatter Plot: Points vs Minutes
+plot(pts ~ minutes, bos)
+# pts (y-axis) vs minutes (x-axis)
+
+## Pairs Plot: Multiple variables
+pairs(bos[, 30:35])
+
+## Pairs Panel: Correlation matrix with distributions
+pairs.panels(bos[, 30:35])
+
+# Missing Data Handling ----
+
+# Check for missing values
+mean(bos$pctFT)  # Returns NA
+mean(bos$pctFT, na.rm = TRUE)  # 0.8097
+sd(bos$pctFT, na.rm = TRUE)    # 0.2587
+
+# View rows with missing data
+bos[!complete.cases(bos), ]  # ! = NOT
+
+# Remove rows with missing values
+new <- na.omit(bos)
+dim(new)  # 439 rows (from 884)
+
+# Data Manipulation with dplyr ----
+
+## SELECT specific columns
+mydata <- bos %>% select(23, 31:35, 'pts')
+
+## FILTER by player
+mydata1 <- bos %>% 
+  select(23, 31:35, 'pts') %>% 
+  filter(namePlayer == 'Jayson Tatum')
+
+## FILTER by points threshold
+mydata2 <- bos %>% 
+  select(23, 31:35, 'pts') %>% 
+  filter(pts > 40) %>% 
+  arrange(desc(pts))
+
+## SUMMARIZE team statistics
+bos %>% 
+  summarise(AVG = mean(pts), 
+            SD = sd(pts), 
+            COUNT = n())
+
+## GROUP BY player and summarize
+bos %>% 
+  group_by(namePlayer) %>%  
+  summarise(AVG = mean(pts), 
+            SD = sd(pts), 
+            COUNT = n()) %>% 
+  arrange(desc(AVG))
+
+## MUTATE: Calculate Effective Field Goal %
+bos %>% 
+  group_by(namePlayer) %>% 
+  summarise(EFG = (sum(fgm) + 0.5*sum(fg3m))/sum(fga),
+            COUNT = n()) %>% 
+  filter(COUNT > 10) %>% 
+  arrange(desc(EFG))
+
+## Analysis: Tatum's average score in wins vs losses
+bos %>% 
+  filter(namePlayer == 'Jayson Tatum') %>% 
+  group_by(outcomeGame) %>% 
+  summarise(PTS = mean(pts))
+
+## Analysis: Player with highest free throws made
+bos %>% 
+  group_by(namePlayer) %>%
+  summarise(FT = sum(ftm)) %>% 
+  arrange(desc(FT))
+
+# Advanced Visualizations with ggplot2 ----
+
+## Histogram: Plus/Minus by outcome
+bos %>% 
+  ggplot(aes(x = plusminus, fill = outcomeGame)) +
+  geom_histogram(alpha = 0.7, color = 'black') +
+  facet_wrap(~outcomeGame) +
+  ggtitle('Player Point Differential in Win/Loss') +
+  theme_minimal()
+
+## Facet Grid: Plus/Minus by outcome and location
+bos %>% 
+  ggplot(aes(x = plusminus, fill = outcomeGame)) +
+  geom_histogram(alpha = 0.5, color = 'black') +
+  facet_grid(vars(outcomeGame), vars(locationGame)) +
+  ggtitle('Player Point Differential in Win and Loss') +
+  theme_bw()
+
+## Scatter Plot: Minutes vs Points
+bos %>% 
+  ggplot(aes(x = minutes, y = pts)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = 'lm') +
+  labs(title = "Minutes vs Points",
+       x = "Minutes Played",
+       y = "Points Scored") +
+  theme_minimal()
+
+## Scatter Plot: Colored by outcome
+bos %>% 
+  ggplot(aes(x = minutes, y = pts, col = outcomeGame)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = 'lm') +
+  labs(title = "Minutes vs Points by Game Outcome") +
+  theme_minimal()
+
+## Bar Plot: Effective Field Goal % by player
+new <- bos %>% 
+  group_by(namePlayer) %>% 
+  summarise(EFG = (sum(fgm) + 0.5*sum(fg3m))/sum(fga),
+            COUNT = n()) %>% 
+  filter(COUNT > 10) %>% 
+  arrange(desc(EFG))
+
+new %>% 
+  ggplot(aes(x = factor(namePlayer), y = EFG, fill = namePlayer)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Effective Field Goal % by Player",
+       x = "Player",
+       y = "EFG%") +
+  theme_minimal()
+
+## Box Plot: Points by player
+bos %>% 
+  ggplot(aes(x = namePlayer, y = pts, col = namePlayer)) +
+  geom_boxplot(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Points Distribution by Player") +
+  theme_minimal()
+
+## Box Plot: Points by player and outcome
+bos %>% 
+  filter(minutes > 5) %>%
+  ggplot(aes(x = interaction(namePlayer, outcomeGame), 
+             y = pts, 
+             fill = outcomeGame)) +
+  geom_boxplot(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Points by Player and Game Outcome") +
+  theme_minimal()
+
+## Marginal Plot: Minutes vs Points with distributions
+s <- bos %>% 
+  ggplot(aes(x = minutes, y = pts)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = 'lm') +
+  theme_minimal()
+
+ggMarginal(s, type = 'histogram', fill = 'lightblue')
+
+# Correlation Analysis ----
+
+# Select numerical variables for correlation
+data <- bos %>% select(32:34, 37:40)
+
+# Correlation matrix
+cor(data)
+round(cor(data), digits = 3)
+
+# Correlation plot
+corrplot(cor(data),
+         type = 'upper',
+         method = 'number',
+         number.cex = 1.2)
+
+# Pairs panel with Spearman correlation
+pairs.panels(data, method = 'spearman')
+
+# Summary Statistics ----
+
+# Games played
+max(bos$numberGameTeamSeason)  # 82 games
+
+# Win/Loss distribution
+table(bos$outcomeGame)
+
+# Games by game number and outcome
+table(bos$numberGameTeamSeason, bos$outcomeGame)
+
+cat("\nAnalysis complete!\n")
