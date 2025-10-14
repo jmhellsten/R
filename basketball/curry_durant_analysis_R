@@ -19,14 +19,7 @@ shotchart(data=subdata, x='xx', y='yy', scatter = TRUE,
           courtline.col = 'white',
           palette = 'hot')
 
-# Curry shooting accuracy from different sectors
-
-shotchart(data=subdata, x='xx', y='yy', scatter = TRUE,
-          num.sect = 8,
-          type = 'sectors',
-          z = 'playlength')
-
-# Curry shooting vs play length
+# Curry shooting sectors vs play length
 
 shotchart(data=subdata, x='xx', y='yy', scatter = F,
           num.sect = 8,
@@ -48,14 +41,7 @@ shotchart(data=subdata, x='xx', y='yy', scatter = TRUE,
           courtline.col = 'white',
           palette = 'hot')
 
-# Durant shooting accuracy from different sector
-
-shotchart(data=subdata, x='xx', y='yy', scatter = TRUE,
-          num.sect = 8,
-          type = 'sectors',
-          z = 'playlength')
-
-# Durant shooting vs play length
+# Durant shooting sectors vs play length
 
 shotchart(data=subdata, x='xx', y='yy', scatter = F,
           num.sect = 8,
