@@ -1,4 +1,4 @@
-# Perustoimeentulotuen saajakotitalouksien analyysi
+# Perustoimeentulotukea saavien kotitalouksien analyysi
 
 Data-analyysi Kelan perustoimeentulotuen saajakotitalouksista vuosilta 2017-2025.
 
