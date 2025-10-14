@@ -1,0 +1,50 @@
+# Shot data comparison
+Stephen Curry Vs Kevin Durant
+# Season 2017-18
+
+library(BasketballAnalyzeR)
+PbP <- PbPmanipulation(PbP.BDB)
+
+# Stephen Curry
+
+subdata <- subset(PbP, player == 'Stephen Curry')
+subdata$xx <- subdata$original_x/10
+subdata$yy <- subdata$original_y/10-41.75
+
+# Curry shot chart
+
+shotchart(data=subdata, x='xx', y='yy', scatter = TRUE,
+          z = 'result',
+          bg.col = 'black',
+          courtline.col = 'white',
+          palette = 'hot')
+
+# Curry shooting sectors vs play length
+
+shotchart(data=subdata, x='xx', y='yy', scatter = F,
+          num.sect = 8,
+          type = 'sectors',
+          z = 'playlength',
+          result = 'result')
+
+# Kevin Durant
+
+subdata <- subset(PbP, player == 'Kevin Durant')
+subdata$xx <- subdata$original_x/10
+subdata$yy <- subdata$original_y/10-41.75
+
+# Durant shot chart
+
+shotchart(data=subdata, x='xx', y='yy', scatter = TRUE,
+          z = 'result',
+          bg.col = 'black',
+          courtline.col = 'white',
+          palette = 'hot')
+
+# Durant shooting sectors vs play length
+
+shotchart(data=subdata, x='xx', y='yy', scatter = F,
+          num.sect = 8,
+          type = 'sectors',
+          z = 'playlength',
+          result = 'result')
