@@ -1,0 +1,88 @@
+# ============================================================================
+# PERUSTOIMEENTULOTUKI-ANALYYSI
+# Nuorten (Alle 25-v.) osuus
+# ============================================================================
+# Kuvaus: Lasketaan nuorten osuus toimeentuloen kotitalouksista
+# ============================================================================
+
+# Lasketaan nuorten osuus vuosittain
+nuoret_kehitys <- data %>%
+  filter(
+    aikatyyppi == "Vuosikertymä",
+    kunta_nimi == "Koko maa",
+    kuukausi_nro == 12,  # Joulukuu (viimeinen kertymä)
+    hakija_alle25v %in% c("Kyllä", "Ei"),  # Vain nämä
+    kotitaloustyyppi != "Tieto puuttuu"
+  ) %>%
+  group_by(vuosi, hakija_alle25v) %>%
+  summarise(
+    saajia = sum(saaja_lkm, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  group_by(vuosi) %>%
+  mutate(
+    yhteensa = sum(saajia),
+    osuus_pct = (saajia / yhteensa) * 100
+  ) %>%
+  ungroup()
+
+# Tulostetaan
+print(nuoret_kehitys)
+
+# Visualisointi
+p_nuoret <- ggplot(nuoret_kehitys %>% filter(hakija_alle25v == "Kyllä"),
+                   aes(x = vuosi, y = osuus_pct)) +
+  geom_line(color = "#E63946", linewidth = 1.5) +
+  geom_point(color = "#E63946", size = 3) +
+  geom_text(aes(label = paste0(round(osuus_pct, 1), "%")),
+            vjust = -1, size = 3.5, fontface = "bold") +
+  scale_y_continuous(
+    labels = label_percent(scale = 1),
+    limits = c(0, max(nuoret_kehitys$osuus_pct) * 1.15)
+  ) +
+  labs(
+    title = "Alle 25-vuotiaiden hakijoiden osuus perustoimeentulotuen saajista",
+    subtitle = "Kehitys 2017-2025",
+    x = NULL,
+    y = "Osuus kaikista saajista",
+    caption = "Lähde: Kelan Kelasto-tilastotietokanta"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    panel.grid.minor = element_blank()
+  )
+
+print(p_nuoret)
+
+# Tallennetaan
+ggsave("nuoret_osuus_kehitys.png", p_nuoret, 
+       width = 10, height = 6, dpi = 300)
+
+# Nuorten ABSOLUUTTINEN määrä
+
+nuoret_absoluuttiset <- nuoret_kehitys %>%
+  filter(hakija_alle25v == "Kyllä") %>%
+  select(vuosi, saajia, osuus_pct)
+
+print(nuoret_absoluuttiset)
+
+# Visualisoidaan absoluuttiset määrät
+p_nuoret_abs <- ggplot(nuoret_absoluuttiset, aes(x = vuosi, y = saajia)) +
+  geom_line(color = "#E63946", linewidth = 1.5) +
+  geom_point(color = "#E63946", size = 3) +
+  scale_y_continuous(labels = label_number(big.mark = " ")) +
+  labs(
+    title = "Alle 25-vuotiaiden hakijoiden määrä",
+    subtitle = "Absoluuttinen kehitys 2017-2025",
+    x = NULL,
+    y = "Kotitalouksia",
+    caption = "Lähde: Kelan Kelasto"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    panel.grid.minor = element_blank()
+  )
+
+print(p_nuoret_abs)
