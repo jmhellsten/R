@@ -29,7 +29,7 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 
 ![Nuoret](nuoret_osuus_kehitys.png)
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+![KNuoret_abs](p_nuoret_abs.png)
 
 ### 3. Yksinhuoltajaperheet haavoittuvampia
 - Yksinhuoltajaperheitä noin **10,000 enemmän** toimeentulotuella kuin kahden huoltajan perheitä
