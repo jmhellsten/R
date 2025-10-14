@@ -19,7 +19,9 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Osuus ei ole palannut pre-COVID tasolle
 - Muut kotitaloustyypit pysyneet vakaina
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+## 2. Kotitaloustyyppien kehitys
+```{r fig-kotitaloustyypit, echo=FALSE, out.width="100%", fig.align="center", fig.cap="Kuva 1: Kotitaloustyyppien prosentuaaliset osuudet perustoimeentulotuen saajista"}
+knitr::include_graphics("../output/figures/01_kotitaloustyypit_osuudet.png")
 
 ### 2. Nuorten tilanne parantunut merkittävästi
 - Alle 25-vuotiaiden hakijoiden määrä **laskenut yli 20,000 kotitaloudella**
