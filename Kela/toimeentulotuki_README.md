@@ -27,7 +27,7 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Sekä absoluuttinen määrä että suhteellinen osuus laskussa
 - **Positiivinen yhteiskunnallinen kehityssuunta**
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+![Nuoret](nuoret_osuus_kehitys.png)
 
 ![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
@@ -36,7 +36,7 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Päätrendi laskeva 2017-2022
 - **Lievä nousu viime vuosina** (2022-2024) - mahdollisesti inflaation vaikutus
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+![Yksinhuoltajat](perheet_vertailu.png)
 
 ![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
