@@ -1,0 +1,85 @@
+# ============================================================================
+# PERUSTOIMEENTULOTUKI-ANALYYSI
+# Datan visualisointi 1
+# ============================================================================
+# Kuvaus: Selvitetään kotitalouksien suhteelliset osuudet
+# ============================================================================
+
+# Suodatetaan ja ryhmitellään data
+
+kotitalous_osuudet <- data %>%
+  # Suodatukset
+  filter(
+    aikatyyppi == "Vuosikertymä",      # Vain vuositaso
+    kunta_nimi == "Koko maa",          # Vain koko maan tiedot
+    kotitaloustyyppi != "Tieto puuttuu" # Poistetaan puuttuvat
+  ) %>%
+  # Ryhmittely ja summaus
+  group_by(vuosi, kotitaloustyyppi) %>%
+  summarise(
+    saajia = sum(saaja_lkm, na.rm = TRUE),
+    .groups = "drop"  # Poista ryhmittely lopussa
+  ) %>%
+  # Lasketaan osuudet
+  group_by(vuosi) %>%
+  mutate(
+    yhteensa = sum(saajia),           # Vuoden kokonaismäärä
+    osuus_pct = (saajia / yhteensa) * 100  # Osuus prosentteina
+  ) %>%
+  ungroup()
+
+# Katsotaan osuudet
+
+print(kotitalous_osuudet, n = Inf)
+View(kotitalous_osuudet)
+
+library(scales)  # Akselin muotoiluun (prosentit, numerot)
+
+# Luodaan viivakaavio
+p1 <- ggplot(kotitalous_osuudet, 
+             aes(x = vuosi, 
+                 y = osuus_pct, 
+                 color = kotitaloustyyppi)) +
+  
+  # Viivat, pisteet viivojen päällä
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  
+  # Y-akseli: Prosenttimerkki ja suomalainen muotoilu
+  scale_y_continuous(
+    labels = label_percent(scale = 1, suffix = " %"),
+    limits = c(0, NA)  # Aloita nollasta
+  ) +
+  
+  # Värit: ColorBrewer-paletti
+  scale_color_brewer(palette = "Set2") +
+  
+  # Otsikot ja selitteet
+  labs(
+    title = "Perustoimeentulotuen saajien jakautuminen kotitaloustyypeittäin",
+    subtitle = "Osuus (%) kaikista saajakotitalouksista, 2017-2025",
+    x = NULL, 
+    y = "Osuus kaikista kotitalouksista",
+    color = "Kotitaloustyyppi",
+    caption = "Lähde: Kelan Kelasto-tilastotietokanta"
+  ) +
+  
+  # Teema: Minimalistinen
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()  # Poistetaan pienemmät ruudukon viivat
+  ) +
+  
+  # Legenda: 2 riviä
+  guides(color = guide_legend(nrow = 2))
+
+# Näytä kuvaaja
+print(p1)
+ggsave("01_kotitaloustyypit_osuudet.png", 
+       plot = p1, 
+       width = 12, 
+       height = 7, 
+       dpi = 300)
