@@ -1,0 +1,109 @@
+# ============================================================================
+# PERUSTOIMEENTULOTUKI-ANALYYSI
+# Yksinhuoltajaperheet
+# ============================================================================
+# Kuvaus: Vertaillaan yksinhuoltajaoperheitä ja kahden huoltajan perheitä
+# ============================================================================
+
+# Yksinhuoltajien vs. kahden huoltajan perheiden vertailu
+perheet_kehitys <- data %>%
+  filter(
+    aikatyyppi == "Vuosikertymä",
+    kunta_nimi == "Koko maa",
+    kuukausi_nro == 12,
+    kotitaloustyyppi %in% c("Yksinhuoltajaperheet", "Kahden huoltajan perheet")
+  ) %>%
+  group_by(vuosi, kotitaloustyyppi) %>%
+  summarise(
+    saajia = sum(saaja_lkm, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(perheet_kehitys)
+
+# Visualisointi 1: Absoluuttiset määrät
+p_perheet <- ggplot(perheet_kehitys, 
+                    aes(x = vuosi, y = saajia, color = kotitaloustyyppi)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 3) +
+  scale_y_continuous(labels = label_number(big.mark = " ")) +
+  scale_color_manual(
+    values = c("Yksinhuoltajaperheet" = "#E63946", 
+               "Kahden huoltajan perheet" = "#457B9D")
+  ) +
+  labs(
+    title = "Perustoimeentulotuen saajat: Yksinhuoltaja- vs. kahden huoltajan perheet",
+    subtitle = "Absoluuttinen kehitys 2017-2025",
+    x = NULL,
+    y = "Kotitalouksia",
+    color = "Perhetyyppi",
+    caption = "Lähde: Kelan Kelasto"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+
+print(p_perheet)
+ggsave("perheet_vertailu.png", p_perheet, width = 12, height = 7, dpi = 300)
+
+# Visualisointi 1: Absoluuttiset määrät
+p_perheet <- ggplot(perheet_kehitys, 
+                    aes(x = vuosi, y = saajia, color = kotitaloustyyppi)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 3) +
+  scale_y_continuous(labels = label_number(big.mark = " ")) +
+  scale_color_manual(
+    values = c("Yksinhuoltajaperheet" = "#E63946", 
+               "Kahden huoltajan perheet" = "#457B9D")
+  ) +
+  labs(
+    title = "Perustoimeentulotuen saajat: Yksinhuoltaja- vs. kahden huoltajan perheet",
+    subtitle = "Absoluuttinen kehitys 2017-2025",
+    x = NULL,
+    y = "Kotitalouksia",
+    color = "Perhetyyppi",
+    caption = "Lähde: Kelan Kelasto"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+
+print(p_perheet)
+ggsave("perheet_vertailu.png", p_perheet, width = 12, height = 7, dpi = 300)
+
+# Lasketaan suhdeluku: Montako kertaa yksinhuoltajia enemmän?
+suhdeluku <- perheet_kehitys %>%
+  select(vuosi, kotitaloustyyppi, saajia) %>%
+  pivot_wider(names_from = kotitaloustyyppi, values_from = saajia) %>%
+  mutate(
+    suhde = Yksinhuoltajaperheet / `Kahden huoltajan perheet`
+  )
+
+cat("\n=== YKSINHUOLTAJIEN SUHDE KAHDEN HUOLTAJAN PERHEISIIN ===\n")
+print(suhdeluku)
+
+# Muutokset
+varhaisin <- min(perheet_kehitys$vuosi)
+viimeisin <- max(perheet_kehitys$vuosi)
+
+muutos_yksinhuoltajat <- perheet_kehitys %>%
+  filter(kotitaloustyyppi == "Yksinhuoltajaperheet") %>%
+  filter(vuosi %in% c(varhaisin, viimeisin)) %>%
+  summarise(
+    muutos = saajia[vuosi == viimeisin] - saajia[vuosi == varhaisin],
+    muutos_pct = (muutos / saajia[vuosi == varhaisin]) * 100
+  )
+
+cat("\n=== YHTEENVETO ===\n")
+cat("Yksinhuoltajien muutos", varhaisin, "→", viimeisin, ":\n")
+cat("  Absoluuttinen:", muutos_yksinhuoltajat$muutos, "kotitaloutta\n")
+cat("  Prosentuaalinen:", round(muutos_yksinhuoltajat$muutos_pct, 1), "%\n")
+
