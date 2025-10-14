@@ -1,0 +1,56 @@
+# ============================================================================
+# PERUSTOIMEENTULOTUKI-ANALYYSI
+# Skripti 1: Datan lataus ja esikäsittely
+# ============================================================================
+# Kuvaus: Ladataan Kelan data ja esikäsitellään analyyseja varten
+# ============================================================================
+
+# PAKETIT -------------------------------------------------------------------
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(zoo)
+
+
+data_raw <- read.csv("D:\\R\\data.csv")
+
+data <- read.csv("D:\\R\\data.csv")
+sample_data <- head(data, 5000)
+write.csv(sample_data, "data_sample.csv", row.names = FALSE)
+
+# Muunnetaan tietotyypit ja luodaan uusia muuttujia
+data <- data_raw %>%
+  mutate(
+    # Numeerinen -> kokonaisluku
+    vuosi = as.integer(vuosi),
+    kuukausi = as.integer(kuukausi_nro),
+    
+    # Luodaan oikea päivämäärämuuttuja (R:n Date-tyyppi)
+    # Esim: vuosi=2024, kuukausi=3 -> "2024-03-01"
+    pvm = ymd(paste0(vuosi, "-", str_pad(kuukausi, 2, pad = "0"), "-01")),
+    
+    # Character -> faktori JÄRJESTYKSELLÄ
+    hakija_alle25v = factor(hakija_alle25v, 
+                            levels = c("Kyllä", "Ei", "Ei tiedossa")),
+    
+    # Muut faktorit
+    kotitaloustyyppi = factor(kotitaloustyyppi),
+    aikatyyppi = factor(aikatyyppi)
+  )
+
+# Tarkistetaan muunnokset
+str(data)
+
+# Katsotaan ensimmäiset rivit
+head(data)
+
+range(data$pvm, na.rm = TRUE)
+
+# Montako puuttuvaa arvoa kussakin sarakkeessa?
+colSums(is.na(data))
+
+# Mikä prosentti riveistä on täydellisiä (ei yhtään NA:ta)?
+mean(complete.cases(data)) * 100
+
+# Katsotaan tarkemmin kotitaloustyyppejä
+table(data$kotitaloustyyppi)
