@@ -19,16 +19,26 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Osuus ei ole palannut pre-COVID tasolle
 - Muut kotitaloustyypit pysyneet vakaina
 
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
 ### 2. Nuorten tilanne parantunut merkittävästi
 - Alle 25-vuotiaiden hakijoiden määrä **laskenut yli 20,000 kotitaloudella**
 - Osuus kaikista saajista laskenut noin **5 prosenttiyksikköä**
 - Sekä absoluuttinen määrä että suhteellinen osuus laskussa
 - **Positiivinen yhteiskunnallinen kehityssuunta**
 
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
 ### 3. Yksinhuoltajaperheet haavoittuvampia
 - Yksinhuoltajaperheitä noin **10,000 enemmän** toimeentulotuella kuin kahden huoltajan perheitä
 - Päätrendi laskeva 2017-2022
 - **Lievä nousu viime vuosina** (2022-2024) - mahdollisesti inflaation vaikutus
+
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
 
 ## 📊 Datalähde
