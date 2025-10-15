@@ -37,12 +37,24 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 
 ![Yksinhuoltajat](perheet_vertailu.png)
 
-### 4. Alueelliset erot
+### Alueelliset erot ovat merkittäviä
 
+Absoluuttisesti suurimmat määrät ovat isoissa kaupungeissa 
+(Helsinki, Tampere), mutta **suhteellinen ongelma on vaikeinta 
+pienissä rakennemuutoskunnissa**.
 
 ![Kartta_luokiteltu](05_kartta_luokiteltu.png)
 
 ![Top10_abs](08_top10_absoluuttiset.png)
+
+Per capita -analyysi paljastaa että pienet rakennemuutoskaupungit 
+kärsivät suhteellisesti eniten. **Outokummulla** on korkein 
+perustoimeentulotuen tarve: 75.7 kotitaloutta per 1000 asukasta, 
+eli noin 7.6% väestöstä. 
+
+Yllättäen myös pääkaupunkiseudun Vantaa (73.4) ja Kerava (73.0) 
+sijoittuvat kärkeen, mikä viittaa merkittävään tuloerojen 
+kasvuun ja asumiskustannusten nousuun alueella.
 
 ![KKartta_per_capita](06_kartta_per_capita.png)
 
