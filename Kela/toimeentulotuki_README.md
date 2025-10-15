@@ -9,8 +9,7 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Kotitaloustyyppien osuuksien kehitykseen
 - Alle 25-vuotiaiden hakijoiden tilanteeseen
 - Yksinhuoltajaperheiden haavoittuvuuteen
-- Alueellisiin eroihin (tulossa)
-- ...
+- Alueellisiin eroihin
 
 ## 🔍 Keskeiset löydökset
 
@@ -38,7 +37,7 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 
 ![Yksinhuoltajat](perheet_vertailu.png)
 
-
+### 4. Alueelliset erot
 
 
 ![Kartta_luokiteltu](05_kartta_luokiteltu.png)
