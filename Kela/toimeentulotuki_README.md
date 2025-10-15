@@ -40,6 +40,14 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 
 ![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
+![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
+
+![KKartta_per_capita](06_kartta_per_capita.png)
+
 
 ## 📊 Datalähde
 
