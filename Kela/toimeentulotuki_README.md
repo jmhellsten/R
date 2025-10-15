@@ -38,15 +38,16 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 
 ![Yksinhuoltajat](perheet_vertailu.png)
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
-![Kuva 1: Kotitaloustyyppien osuudet](../output/figures/01_kotitaloustyypit_osuudet.png)
 
 ![Kartta_luokiteltu](05_kartta_luokiteltu.png)
 
+![Top10_abs](08_top_10_absoluuttiset.png)
+
 ![KKartta_per_capita](06_kartta_per_capita.png)
+
+![Top10_per_capitat](07_top10_per_capita.png)
 
 
 ## 📊 Datalähde
