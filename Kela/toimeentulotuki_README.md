@@ -18,7 +18,10 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Osuus ei ole palannut pre-COVID tasolle
 - Muut kotitaloustyypit pysyneet vakaina
 
+  
+
 ![Kotitaloustyypit](01_kotitaloustyypit_osuudet.png)
+
 
 ### 2. Nuorten tilanne parantunut merkittävästi
 - Alle 25-vuotiaiden hakijoiden määrä **laskenut yli 20,000 kotitaloudella**
@@ -26,16 +29,20 @@ Tämä projekti analysoi perustoimeentulotuen saajakotitalouksien kehitystä Suo
 - Sekä absoluuttinen määrä että suhteellinen osuus laskussa
 - **Positiivinen yhteiskunnallinen kehityssuunta**
 
+
 ![Nuoret](nuoret_osuus_kehitys.png)
 
 ![KNuoret_abs](p_nuoret_abs.png)
+
 
 ### 3. Yksinhuoltajaperheet haavoittuvampia
 - Yksinhuoltajaperheitä noin **10,000 enemmän** toimeentulotuella kuin kahden huoltajan perheitä
 - Päätrendi laskeva 2017-2022
 - **Lievä nousu viime vuosina** (2022-2024) - mahdollisesti inflaation vaikutus
 
+
 ![Yksinhuoltajat](perheet_vertailu.png)
+
 
 ### Alueelliset erot ovat merkittäviä
 
@@ -43,9 +50,11 @@ Absoluuttisesti suurimmat määrät ovat isoissa kaupungeissa
 (Helsinki, Tampere), mutta **suhteellinen ongelma on vaikeinta 
 pienissä rakennemuutoskunnissa**.
 
+
 ![Kartta_luokiteltu](05_kartta_luokiteltu.png)
 
 ![Top10_abs](08_top10_absoluuttiset.png)
+
 
 Per capita -analyysi paljastaa että pienet rakennemuutoskaupungit 
 kärsivät suhteellisesti eniten. **Outokummulla** on korkein 
@@ -55,6 +64,7 @@ eli noin 7.6% väestöstä.
 Yllättäen myös pääkaupunkiseudun Vantaa (73.4) ja Kerava (73.0) 
 sijoittuvat kärkeen, mikä viittaa merkittävään tuloerojen 
 kasvuun ja asumiskustannusten nousuun alueella.
+
 
 ![KKartta_per_capita](06_kartta_per_capita.png)
 
