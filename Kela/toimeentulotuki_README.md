@@ -73,7 +73,7 @@ kasvuun ja asumiskustannusten nousuun alueella.
 
 ## 📊 Datalähde
 
-https://www.avoindata.fi/data/fi/dataset/perustoimeentulotuen-saajakotitaloudet/resource/f0cad007-f5e3-4495-acf4-49b22790745d?filters=
+https://www.avoindata.fi/data/fi/dataset/perustoimeentulotuen-saajakotitaloudet
 
 ---
 
